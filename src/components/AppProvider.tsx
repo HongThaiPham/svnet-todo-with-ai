@@ -1,16 +1,16 @@
 import React, { PropsWithChildren } from "react";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { auth } from "@/auth";
-import AuthSessionProvider from "./AuthSessionProvider";
+import { SessionProvider } from "next-auth/react";
 
 type Props = {};
 
 const AppProvider: React.FC<PropsWithChildren> = async ({ children }) => {
   const session = await auth();
   return (
-    <AuthSessionProvider session={session}>
+    <SessionProvider session={session}>
       <ConvexClientProvider>{children}</ConvexClientProvider>
-    </AuthSessionProvider>
+    </SessionProvider>
   );
 };
 
