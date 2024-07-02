@@ -29,6 +29,7 @@ import {
 import UserProfile from "./UserProfile";
 import { primaryNavItems } from "@/lib/menu-items";
 import Link from "next/link";
+import { signOutAction } from "@/actions/auth-actions";
 type Props = {};
 
 const Header: React.FC<Props> = ({}) => {
@@ -109,7 +110,13 @@ const Header: React.FC<Props> = ({}) => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem className="lg:w-full">
+            <form action={signOutAction}>
+              <button type="submit" className="hover:text-rose-500">
+                Sign out
+              </button>
+            </form>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
