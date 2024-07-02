@@ -9,13 +9,12 @@ const UserProfile: React.FC<Props> = async ({}) => {
   if (!session) return null;
   return (
     <div>
-      <h1>User Profile</h1>
-      <Avatar>
+      <Avatar className="w-8 h-8">
         <AvatarImage
           src={session?.user?.image as string}
           alt="User profile avatar"
-          width={24}
-          height={24}
+          width={32}
+          height={32}
         />
         <AvatarFallback>SV</AvatarFallback>
       </Avatar>
