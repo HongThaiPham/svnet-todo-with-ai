@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import AppProvider from "@/components/AppProvider";
 
 const inter = Outfit({ subsets: ["latin"] });
 
@@ -23,7 +24,7 @@ export default function RootLayout({
           inter.className
         )}
       >
-        {children}
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   );
