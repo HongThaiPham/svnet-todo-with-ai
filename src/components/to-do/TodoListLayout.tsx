@@ -6,6 +6,7 @@ import TaskItem from "./TaskItem";
 import { CircleCheckBig } from "lucide-react";
 import TodoList from "./TodoList";
 import CompletedTodos from "./CompletedTodos";
+import AddTaskWrapper from "../task/AddTaskWrapper";
 
 type Props = {};
 
@@ -31,6 +32,7 @@ const TodoListLayout: React.FC<Props> = ({}) => {
       <div className="flex flex-col gap-1 py-4">
         <TodoList todos={incomplete} />
       </div>
+      <AddTaskWrapper />
       <div className="flex flex-col gap-1 py-4">
         <TodoList todos={completed} />
       </div>

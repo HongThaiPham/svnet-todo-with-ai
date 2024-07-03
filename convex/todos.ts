@@ -1,5 +1,8 @@
-import { mutation, query } from "./_generated/server";
+import { action, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { handleUserId } from "./auth";
+import { redirect } from "next/navigation";
+import { api } from "./_generated/api";
 export const get = query({
   args: {
     parentId: v.optional(v.id("todos")),
@@ -54,5 +57,86 @@ export const toggleTodo = mutation({
       isCompleted: args.isCompleted,
     });
     return newTodoId;
+  },
+});
+
+export const createATodo = mutation({
+  args: {
+    taskName: v.string(),
+    description: v.optional(v.string()),
+    priority: v.number(),
+    dueDate: v.number(),
+    projectId: v.id("projects"),
+    labelId: v.id("labels"),
+    embedding: v.optional(v.array(v.float64())),
+    parentId: v.optional(v.id("todos")),
+  },
+  handler: async (
+    ctx,
+    {
+      taskName,
+      description,
+      priority,
+      dueDate,
+      projectId,
+      labelId,
+      embedding,
+      parentId,
+    }
+  ) => {
+    try {
+      const userId = await handleUserId(ctx);
+
+      if (!userId) {
+        redirect("/");
+      }
+      if (userId) {
+        const newTaskId = await ctx.db.insert("todos", {
+          userId,
+          taskName,
+          description,
+          priority,
+          dueDate,
+          projectId,
+          labelId,
+          isCompleted: false,
+          embedding,
+          parentId: parentId ?? null,
+        });
+        return newTaskId;
+      }
+
+      return null;
+    } catch (err) {
+      console.log("Error occurred during create a todo mutation", err);
+
+      return null;
+    }
+  },
+});
+
+export const createTodoAndEmbeddings = action({
+  args: {
+    taskName: v.string(),
+    description: v.optional(v.string()),
+    priority: v.number(),
+    dueDate: v.number(),
+    projectId: v.id("projects"),
+    labelId: v.id("labels"),
+  },
+  handler: async (
+    ctx,
+    { taskName, description, priority, dueDate, projectId, labelId }
+  ) => {
+    const embedding = [1, 2, 3]; //await getEmbeddingsWithAI(taskName);
+    await ctx.runMutation(api.todos.createATodo, {
+      taskName,
+      description,
+      priority,
+      dueDate,
+      projectId,
+      labelId,
+      embedding,
+    });
   },
 });
