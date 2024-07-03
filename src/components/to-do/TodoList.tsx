@@ -24,7 +24,12 @@ const TodoList: React.FC<Props> = ({ todos }) => {
     }
   };
   return todos.map((todo) => (
-    <TaskItem key={todo._id} todo={todo} onChange={handleOnChangeTodo} />
+    <TaskItem
+      key={todo._id}
+      todo={todo}
+      onChange={handleOnChangeTodo}
+      showDetails
+    />
   ));
 };
 

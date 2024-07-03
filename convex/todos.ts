@@ -249,3 +249,32 @@ export const getOverdueTodos = query({
       .collect();
   },
 });
+
+export const getTodosGroupByDate = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("Unauthorized access");
+    }
+
+    const todos = await ctx.db
+      .query("todos")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("userId"), userId),
+          q.eq(q.field("parentId"), null),
+          q.gt(q.field("dueDate"), new Date().getTime())
+        )
+      )
+      .collect();
+
+    const groupedTodos = todos.reduce<any>((acc, todo) => {
+      const dueDate = new Date(todo.dueDate).toDateString();
+      acc[dueDate] = (acc[dueDate] || []).concat(todo);
+      return acc;
+    }, {});
+
+    return groupedTodos;
+  },
+});
