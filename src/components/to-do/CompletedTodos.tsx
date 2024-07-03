@@ -7,7 +7,7 @@ type Props = {
 
 const CompletedTodos: React.FC<Props> = ({ totalTodos = 0 }) => {
   return (
-    <div className="flex items-center gap-1 border-b-2 p-2 border-gray-100 text-sm text-foreground[.8]">
+    <div className="flex items-center gap-1 border-b-2 p-2 border-gray-100 text-sm text-muted-foreground">
       <CircleCheckBig />
       <span>+ {totalTodos}</span>
       <span className="capitalize">completed task</span>
