@@ -1,6 +1,8 @@
 import { ConvexError, v } from "convex/values";
-import { query } from "./_generated/server";
+import { action, mutation, query } from "./_generated/server";
 import { handleUserId } from "./auth";
+import { api } from "./_generated/api";
+import { Doc } from "./_generated/dataModel";
 
 export const get = query({
   args: {},
@@ -41,5 +43,79 @@ export const getById = query({
     //   .collect();
     // return project?.[0] || null;
     return await ctx.db.get(args.id);
+  },
+});
+
+export const createAProject = mutation({
+  args: {
+    name: v.string(),
+  },
+  handler: async (ctx, { name }) => {
+    try {
+      const userId = await handleUserId(ctx);
+      if (!userId) {
+        throw new ConvexError("Unauthorized access");
+      }
+      const newTaskId = await ctx.db.insert("projects", {
+        userId,
+        name,
+        type: "user",
+      });
+      return newTaskId;
+    } catch (err) {
+      console.log("Error occurred during createAProject mutation", err);
+
+      return null;
+    }
+  },
+});
+
+export const deleteProject = mutation({
+  args: {
+    projectId: v.id("projects"),
+  },
+  handler: async (ctx, { projectId }) => {
+    try {
+      const userId = await handleUserId(ctx);
+      if (!userId) {
+        throw new ConvexError("Unauthorized access");
+      }
+      const taskId = await ctx.db.delete(projectId);
+      //query todos and map through them and delete
+
+      return taskId;
+    } catch (err) {
+      console.log("Error occurred during deleteProject mutation", err);
+
+      return null;
+    }
+  },
+});
+
+export const deleteProjectAndItsTasks = action({
+  args: {
+    projectId: v.id("projects"),
+  },
+  handler: async (ctx, { projectId }) => {
+    try {
+      const allTasks = await ctx.runQuery(api.todos.getTodosByProjectId, {
+        projectId,
+      });
+
+      const promises = Promise.allSettled(
+        allTasks.map(async (task: Doc<"todos">) =>
+          ctx.runMutation(api.todos.deleteATodo, {
+            taskId: task._id,
+          })
+        )
+      );
+      await promises;
+
+      await ctx.runMutation(api.projects.deleteProject, {
+        projectId,
+      });
+    } catch (err) {
+      console.error("Error deleting tasks and projects", err);
+    }
   },
 });

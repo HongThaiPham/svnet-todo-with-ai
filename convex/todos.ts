@@ -282,3 +282,122 @@ export const getTodosGroupByDate = query({
     return groupedTodos;
   },
 });
+
+export const getCompletedTodosByProjectId = query({
+  args: {
+    projectId: v.id("projects"),
+  },
+  handler: async (ctx, { projectId }) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("Unauthorized access");
+    }
+
+    return await ctx.db
+      .query("todos")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("userId"), userId),
+          q.eq(q.field("parentId"), null),
+          q.eq(q.field("projectId"), projectId),
+          q.eq(q.field("isCompleted"), true)
+        )
+      )
+      .collect();
+  },
+});
+
+export const getTodosByProjectId = query({
+  args: {
+    projectId: v.id("projects"),
+  },
+  handler: async (ctx, { projectId }) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("Unauthorized access");
+    }
+
+    return await ctx.db
+      .query("todos")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("userId"), userId),
+          q.eq(q.field("parentId"), null),
+          q.eq(q.field("projectId"), projectId)
+        )
+      )
+      .collect();
+  },
+});
+
+export const getInCompleteTodosByProjectId = query({
+  args: {
+    projectId: v.id("projects"),
+  },
+  handler: async (ctx, { projectId }) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("Unauthorized access");
+    }
+
+    return await ctx.db
+      .query("todos")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("userId"), userId),
+          q.eq(q.field("parentId"), null),
+          q.eq(q.field("projectId"), projectId),
+          q.eq(q.field("isCompleted"), false)
+        )
+      )
+      .collect();
+  },
+});
+
+export const getTodosTotalByProjectId = query({
+  args: {
+    projectId: v.id("projects"),
+  },
+  handler: async (ctx, { projectId }) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("Unauthorized access");
+    }
+
+    const todos = await ctx.db
+      .query("todos")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("userId"), userId),
+          q.eq(q.field("parentId"), null),
+          q.eq(q.field("projectId"), projectId),
+          q.eq(q.field("isCompleted"), true)
+        )
+      )
+      .collect();
+
+    return todos?.length || 0;
+  },
+});
+
+export const deleteATodo = mutation({
+  args: {
+    taskId: v.id("todos"),
+  },
+  handler: async (ctx, { taskId }) => {
+    try {
+      const userId = await handleUserId(ctx);
+      if (!userId) {
+        throw new ConvexError("Unauthorized access");
+      }
+      const deletedTaskId = await ctx.db.delete(taskId);
+      //query todos and map through them and delete
+
+      return deletedTaskId;
+    } catch (err) {
+      console.log("Error occurred during deleteATodo mutation", err);
+
+      return null;
+    }
+  },
+});

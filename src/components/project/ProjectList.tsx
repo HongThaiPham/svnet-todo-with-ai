@@ -1,10 +1,10 @@
 "use client";
 import { useQuery } from "convex/react";
 import React from "react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { Hash } from "lucide-react";
-import { Label } from "./ui/label";
+import { Label } from "../ui/label";
 
 type Props = {};
 
