@@ -2,8 +2,6 @@
 import { useQuery } from "convex/react";
 import React from "react";
 import { api } from "../../../convex/_generated/api";
-import TaskItem from "./TaskItem";
-import { CircleCheckBig } from "lucide-react";
 import TodoList from "./TodoList";
 import CompletedTodos from "./CompletedTodos";
 import AddTaskWrapper from "../task/AddTaskWrapper";
@@ -11,17 +9,12 @@ import AddTaskWrapper from "../task/AddTaskWrapper";
 type Props = {};
 
 const TodoListLayout: React.FC<Props> = ({}) => {
-  const todos = useQuery(api.todos.get, { parentId: null }) ?? [];
   const completed = useQuery(api.todos.getCompleted, { parentId: null }) ?? [];
   const incomplete =
     useQuery(api.todos.getIncomplete, { parentId: null }) ?? [];
   const totalTodos = useQuery(api.todos.totalTodos) ?? 0;
 
-  if (
-    todos === undefined ||
-    incomplete === undefined ||
-    completed === undefined
-  ) {
+  if (incomplete === undefined || completed === undefined) {
     return <div>Loading...</div>;
   }
 

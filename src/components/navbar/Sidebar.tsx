@@ -1,6 +1,7 @@
+"use client";
 import Link from "next/link";
-import React from "react";
-import { Bell } from "lucide-react";
+import React, { useState } from "react";
+import { Bell, Hash, PlusIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -11,9 +12,21 @@ import {
 } from "../ui/card";
 import UserProfile from "../UserProfile";
 import { primaryNavItems } from "@/lib/menu-items";
+import { usePathname } from "next/navigation";
+import { Dialog, DialogTrigger } from "../ui/dialog";
+import { cn } from "@/lib/utils";
 type Props = {};
+interface MyListTitleType {
+  [key: string]: string;
+}
 
 const Sidebar: React.FC<Props> = ({}) => {
+  const [navItems, setNavItems] = useState([...primaryNavItems]);
+  const LIST_OF_TITLE_IDS: MyListTitleType = {
+    primary: "",
+    projects: "My Projects",
+  };
+  const pathname = usePathname();
   return (
     <div className="hidden border-r bg-muted/40 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -26,15 +39,62 @@ const Sidebar: React.FC<Props> = ({}) => {
         </div>
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            {primaryNavItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.link}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                {item.icon}
-                {item.name}
-              </Link>
+            {navItems.map(({ name, icon, link, id }, idx) => (
+              <div key={idx}>
+                {id && (
+                  <div
+                    className={cn(
+                      "flex items-center mt-6 mb-2",
+                      id === "filters" && "my-0"
+                    )}
+                  >
+                    <p className="flex flex-1 text-base">
+                      {LIST_OF_TITLE_IDS[id]}
+                    </p>
+                    {/* {LIST_OF_TITLE_IDS[id] === "My Projects" && (
+                      <AddProjectDialog />
+                    )} */}
+                  </div>
+                )}
+                <div className={cn("flex items-center lg:w-full")}>
+                  <div
+                    className={cn(
+                      "flex items-center text-left lg:gap-3 rounded-lg py-2 transition-all hover:text-primary justify-between w-full",
+                      pathname === link
+                        ? "active rounded-lg bg-primary/10 text-primary transition-all hover:text-primary"
+                        : "text-foreground "
+                    )}
+                  >
+                    <Link
+                      key={idx}
+                      href={link}
+                      className={cn(
+                        "flex items-center text-left gap-3 rounded-lg transition-all hover:text-primary w-full"
+                      )}
+                    >
+                      <div className="flex gap-4 items-center w-full">
+                        <div className="flex gap-2 items-center">
+                          <p className="flex text-base text-left">
+                            {icon || <Hash />}
+                          </p>
+                          <p>{name}</p>
+                        </div>
+                      </div>
+                    </Link>
+                    {id === "filters" && (
+                      <Dialog>
+                        <DialogTrigger id="closeDialog">
+                          <PlusIcon
+                            className="h-5 w-5"
+                            aria-label="Add a Label"
+                          />
+                        </DialogTrigger>
+                        {/* <AddLabelDialog /> */}
+                      </Dialog>
+                    )}
+                  </div>
+                </div>
+              </div>
             ))}
           </nav>
         </div>

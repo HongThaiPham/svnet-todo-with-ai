@@ -1,8 +1,8 @@
 import { action, mutation, query } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
 import { handleUserId } from "./auth";
-import { redirect } from "next/navigation";
 import { api } from "./_generated/api";
+// import dayjs from "dayjs";
 export const get = query({
   args: {
     parentId: v.union(v.id("todos"), v.null()),
@@ -10,7 +10,7 @@ export const get = query({
   handler: async (ctx, args) => {
     const userId = await handleUserId(ctx);
     if (!userId) {
-      redirect("/");
+      throw new ConvexError("Unauthorized access");
     }
     if (args.parentId) {
       return await ctx.db
@@ -35,7 +35,7 @@ export const getCompleted = query({
   handler: async (ctx, args) => {
     const userId = await handleUserId(ctx);
     if (!userId) {
-      redirect("/");
+      throw new ConvexError("Unauthorized access");
     }
     return await ctx.db
       .query("todos")
@@ -57,7 +57,7 @@ export const getIncomplete = query({
   handler: async (ctx, args) => {
     const userId = await handleUserId(ctx);
     if (!userId) {
-      redirect("/");
+      throw new ConvexError("Unauthorized access");
     }
     return await ctx.db
       .query("todos")
@@ -77,7 +77,7 @@ export const totalTodos = query({
   handler: async (ctx, args) => {
     const userId = await handleUserId(ctx);
     if (!userId) {
-      redirect("/");
+      throw new ConvexError("Unauthorized access");
     }
     const todos = await ctx.db
       .query("todos")
@@ -95,7 +95,7 @@ export const toggleTodo = mutation({
   handler: async (ctx, args) => {
     const userId = await handleUserId(ctx);
     if (!userId) {
-      redirect("/");
+      throw new ConvexError("Unauthorized access");
     }
 
     const todos = await ctx.db
@@ -144,7 +144,7 @@ export const createATodo = mutation({
       const userId = await handleUserId(ctx);
 
       if (!userId) {
-        redirect("/");
+        throw new ConvexError("Unauthorized access");
       }
       if (userId) {
         const newTaskId = await ctx.db.insert("todos", {
@@ -196,5 +196,56 @@ export const createTodoAndEmbeddings = action({
       embedding,
       parentId: parentId ?? null,
     });
+  },
+});
+
+export const getTodayTodos = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await handleUserId(ctx);
+
+    if (!userId) {
+      throw new ConvexError("Unauthorized access");
+    }
+
+    // const todayStart = dayjs().startOf("day");
+    // const todayEnd = dayjs().endOf("day");
+
+    return await ctx.db
+      .query("todos")
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("userId"), userId),
+          q.eq(q.field("parentId"), null)
+          // q.gte(q.field("dueDate"), todayStart.valueOf()),
+          // q.lte(todayEnd.valueOf(), q.field("dueDate"))
+        )
+      )
+      .collect();
+  },
+});
+
+export const getOverdueTodos = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("Unauthorized access");
+    }
+
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    return await ctx.db
+      .query("todos")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("userId"), userId),
+          q.eq(q.field("parentId"), null),
+          q.lt(q.field("dueDate"), todayStart.getTime())
+        )
+      )
+      .collect();
   },
 });

@@ -57,7 +57,7 @@ const TaskItem: React.FC<Props> = ({ todo, onChange, showDetails }) => {
               </div>
             </DialogTrigger>
           </div>
-          <TaskDialog todo={todo} />
+          {!todo.parentId ? <TaskDialog todo={todo} /> : null}
         </div>
       </Dialog>
     </div>
