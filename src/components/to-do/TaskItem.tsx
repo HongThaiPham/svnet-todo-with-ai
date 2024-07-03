@@ -43,12 +43,12 @@ const TaskItem: React.FC<Props> = ({ todo, onChange, showDetails }) => {
                 {showDetails && (
                   <div className="flex gap-2">
                     <div className="flex items-center justify-center gap-1">
-                      <GitBranch className="w-3 h-3 text-foreground/70" />
+                      <GitBranch className="w-3 h-3 text-orange-500" />
                       <p className="text-xs text-foreground/70"></p>
                     </div>
                     <div className="flex items-center justify-center gap-1">
                       <Calendar className="w-3 h-3 text-primary" />
-                      <p className="text-xs text-primary">
+                      <p className="text-xs text-muted-foreground">
                         {dayjs(todo.dueDate).format("LL")}
                       </p>
                     </div>

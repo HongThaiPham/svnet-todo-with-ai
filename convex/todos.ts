@@ -2,6 +2,7 @@ import { action, mutation, query } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
 import { handleUserId } from "./auth";
 import { api } from "./_generated/api";
+import { Doc } from "./_generated/dataModel";
 // import dayjs from "dayjs";
 export const get = query({
   args: {
@@ -269,11 +270,14 @@ export const getTodosGroupByDate = query({
       )
       .collect();
 
-    const groupedTodos = todos.reduce<any>((acc, todo) => {
-      const dueDate = new Date(todo.dueDate).toDateString();
-      acc[dueDate] = (acc[dueDate] || []).concat(todo);
-      return acc;
-    }, {});
+    const groupedTodos = todos.reduce<any>(
+      (acc, todo) => {
+        const dueDate = new Date(todo.dueDate).toDateString();
+        acc[dueDate] = (acc[dueDate] || []).concat(todo);
+        return acc;
+      },
+      {} as Record<string, Doc<"todos">[]>
+    );
 
     return groupedTodos;
   },

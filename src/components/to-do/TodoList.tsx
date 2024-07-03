@@ -8,9 +8,10 @@ import { useToast } from "../ui/use-toast";
 
 type Props = {
   todos: Array<Doc<"todos">>;
+  showDetails?: boolean;
 };
 
-const TodoList: React.FC<Props> = ({ todos }) => {
+const TodoList: React.FC<Props> = ({ todos, showDetails }) => {
   const { toast } = useToast();
   const toggleTodo = useMutation(api.todos.toggleTodo);
   const handleOnChangeTodo = (task: Doc<"todos">) => {
@@ -28,7 +29,7 @@ const TodoList: React.FC<Props> = ({ todos }) => {
       key={todo._id}
       todo={todo}
       onChange={handleOnChangeTodo}
-      showDetails
+      showDetails={showDetails}
     />
   ));
 };

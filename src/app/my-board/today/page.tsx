@@ -24,7 +24,7 @@ const TodayPage: React.FC<Props> = ({}) => {
       </div>
       <div className="flex flex-col gap-1 py-4">
         <p className="font-bold flex text-sm">Overdue</p>
-        <TodoList todos={todayTodos} />
+        <TodoList todos={todayTodos} showDetails />
       </div>
       <AddTaskWrapper />
       <div className="flex flex-col gap-1 py-4">

@@ -23,7 +23,7 @@ const UpcomingPage: React.FC<Props> = ({}) => {
       </div>
       <div className="flex flex-col gap-1 py-4">
         <p className="font-bold flex text-sm">Overdue</p>
-        <TodoList todos={overdueTodos} />
+        <TodoList todos={overdueTodos} showDetails />
       </div>
       <div className="pb-6">
         <AddTaskWrapper />
@@ -37,7 +37,7 @@ const UpcomingPage: React.FC<Props> = ({}) => {
                 {dayjs(dueDate).format("dddd")}
               </p>
               <ul>
-                <TodoList todos={groupTodosByDate[dueDate]} />
+                <TodoList todos={groupTodosByDate[dueDate]} showDetails />
                 <div className="pt-6">
                   <AddTaskWrapper />
                 </div>
