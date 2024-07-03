@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Bell, Hash, PlusIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -15,6 +15,9 @@ import { primaryNavItems } from "@/lib/menu-items";
 import { usePathname } from "next/navigation";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import { cn } from "@/lib/utils";
+import { Doc } from "../../../convex/_generated/dataModel";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 type Props = {};
 interface MyListTitleType {
   [key: string]: string;
@@ -22,11 +25,28 @@ interface MyListTitleType {
 
 const Sidebar: React.FC<Props> = ({}) => {
   const [navItems, setNavItems] = useState([...primaryNavItems]);
+  const projectList = useQuery(api.projects.get);
   const LIST_OF_TITLE_IDS: MyListTitleType = {
     primary: "",
     projects: "My Projects",
   };
   const pathname = usePathname();
+  const renderItems = useMemo(() => {
+    if (projectList)
+      return [
+        ...primaryNavItems,
+        ...projectList.map(({ _id, name }, idx) => {
+          return {
+            ...(idx === 0 && { id: "projects" }),
+            name,
+            link: `/my-board/projects/${_id.toString()}`,
+            icon: <Hash className="w-4 h-4" />,
+          };
+        }),
+      ];
+    return primaryNavItems;
+  }, [projectList]);
+
   return (
     <div className="hidden border-r bg-muted/40 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -39,7 +59,7 @@ const Sidebar: React.FC<Props> = ({}) => {
         </div>
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            {navItems.map(({ name, icon, link, id }, idx) => (
+            {renderItems.map(({ name, icon, link, id }, idx) => (
               <div key={idx}>
                 {id && (
                   <div
