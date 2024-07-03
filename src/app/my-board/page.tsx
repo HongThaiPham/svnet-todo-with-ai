@@ -1,4 +1,4 @@
-import UserProfile from "@/components/UserProfile";
+import TodoListLayout from "@/components/to-do/TodoListLayout";
 import React from "react";
 
 type Props = {};
@@ -6,8 +6,7 @@ type Props = {};
 const MyBoardPage: React.FC<Props> = ({}) => {
   return (
     <div>
-      <h1>Logged In</h1>
-      <UserProfile />
+      <TodoListLayout />
     </div>
   );
 };
