@@ -22,3 +22,16 @@ export const get = query({
     return [];
   },
 });
+
+export const getById = query({
+  args: {
+    id: v.id("labels"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await handleUserId(ctx);
+    if (userId) {
+      return await ctx.db.get(args.id);
+    }
+    return null;
+  },
+});

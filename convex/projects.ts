@@ -1,3 +1,4 @@
+import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { handleUserId } from "./auth";
 
@@ -22,5 +23,23 @@ export const get = query({
       return userProjects;
     }
     return [];
+  },
+});
+
+export const getById = query({
+  args: {
+    id: v.id("projects"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await handleUserId(ctx);
+    if (userId) {
+      // const project = await ctx.db
+      //   .query("projects")
+      //   .filter((q) => q.eq(q.field("_id"), args.id))
+      //   .collect();
+      // return project?.[0] || null;
+      return await ctx.db.get(args.id);
+    }
+    return null;
   },
 });

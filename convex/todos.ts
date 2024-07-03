@@ -1,5 +1,5 @@
 import { action, mutation, query } from "./_generated/server";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { handleUserId } from "./auth";
 import { redirect } from "next/navigation";
 import { api } from "./_generated/api";
@@ -8,10 +8,19 @@ export const get = query({
     parentId: v.optional(v.id("todos")),
   },
   handler: async (ctx, args) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      redirect("/");
+    }
     if (args.parentId) {
       return await ctx.db
         .query("todos")
-        .filter((q) => q.eq(q.field("parentId"), args.parentId))
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("userId"), userId),
+            q.eq(q.field("parentId"), args.parentId)
+          )
+        )
         .collect();
     } else {
       return await ctx.db.query("todos").collect();
@@ -22,9 +31,18 @@ export const get = query({
 export const getCompleted = query({
   args: {},
   handler: async (ctx, args) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      redirect("/");
+    }
     return await ctx.db
       .query("todos")
-      .filter((q) => q.eq(q.field("isCompleted"), true))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("userId"), userId),
+          q.eq(q.field("isCompleted"), true)
+        )
+      )
       .collect();
   },
 });
@@ -32,9 +50,18 @@ export const getCompleted = query({
 export const getIncomplete = query({
   args: {},
   handler: async (ctx, args) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      redirect("/");
+    }
     return await ctx.db
       .query("todos")
-      .filter((q) => q.eq(q.field("isCompleted"), false))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("userId"), userId),
+          q.eq(q.field("isCompleted"), false)
+        )
+      )
       .collect();
   },
 });
@@ -42,7 +69,14 @@ export const getIncomplete = query({
 export const totalTodos = query({
   args: {},
   handler: async (ctx, args) => {
-    const todos = await ctx.db.query("todos").collect();
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      redirect("/");
+    }
+    const todos = await ctx.db
+      .query("todos")
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .collect();
     return todos.length || 0;
   },
 });
@@ -53,6 +87,22 @@ export const toggleTodo = mutation({
     isCompleted: v.boolean(),
   },
   handler: async (ctx, args) => {
+    const userId = await handleUserId(ctx);
+    if (!userId) {
+      redirect("/");
+    }
+
+    const todos = await ctx.db
+      .query("todos")
+      .filter((q) =>
+        q.and(q.eq(q.field("userId"), userId), q.eq(q.field("_id"), args.id))
+      )
+      .collect();
+
+    if (todos.length === 0) {
+      throw new ConvexError("You are not authorized to update this todo");
+    }
+
     const newTodoId = await ctx.db.patch(args.id, {
       isCompleted: args.isCompleted,
     });

@@ -3,16 +3,10 @@ import React from "react";
 import { Doc } from "../../../convex/_generated/dataModel";
 import { Checkbox } from "../ui/checkbox";
 import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+import { Dialog, DialogTrigger } from "../ui/dialog";
 import { Calendar, GitBranch } from "lucide-react";
 import dayjs from "dayjs";
+import TaskDialog from "./TaskDialog";
 
 type Props = {
   todo: Doc<"todos">;
@@ -63,36 +57,9 @@ const TaskItem: React.FC<Props> = ({ todo, onChange, showDetails }) => {
               </div>
             </DialogTrigger>
           </div>
+          <TaskDialog todo={todo} />
         </div>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
       </Dialog>
-
-      {/* <div key={todo._id} className="flex items-center space-x-2">
-        <Checkbox
-          id={todo._id}
-          className={cn(
-            "w-5 h-5 rounded-xl",
-            todo.isCompleted &&
-              "data-[state=checked]:bg-gray-300 border-gray-300"
-          )}
-          checked={todo.isCompleted}
-          onCheckedChange={() => onChange(todo)}
-        />
-        <label
-          htmlFor={todo._id}
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          {todo.taskName}
-        </label>
-      </div> */}
     </div>
   );
 };

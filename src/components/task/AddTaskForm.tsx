@@ -6,10 +6,8 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../ui/form";
 import { Doc, Id } from "../../../convex/_generated/dataModel";
@@ -30,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useAction, useMutation, useQuery } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useToast } from "../ui/use-toast";
 
