@@ -14,6 +14,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import dayjs from "dayjs";
 import { Label } from "../ui/label";
+import TodoList from "./TodoList";
 dayjs.extend(localizedFormat);
 type Props = {
   todo: Doc<"todos">;
@@ -22,6 +23,11 @@ type Props = {
 const TaskDialog: React.FC<Props> = ({ todo }) => {
   const project = useQuery(api.projects.getById, { id: todo.projectId });
   const label = useQuery(api.labels.getById, { id: todo.labelId });
+
+  const subTaskCompleted =
+    useQuery(api.todos.getCompleted, { parentId: todo._id }) ?? [];
+  const subTaskIncompleted =
+    useQuery(api.todos.getIncomplete, { parentId: todo._id }) ?? [];
 
   const [todoDetails, setTodoDetails] = useState<
     Array<{ labelName: string; value: string; icon: React.ReactNode }>
@@ -68,9 +74,12 @@ const TaskDialog: React.FC<Props> = ({ todo }) => {
             </div>
           </div>
           <div className="pl-4">
-            <div className="pb-4">
+            <TodoList todos={subTaskIncompleted} />
+            <div className="py-4">
               <AddTaskWrapper parentTask={todo} />
             </div>
+
+            <TodoList todos={subTaskCompleted} />
           </div>
         </DialogDescription>
       </DialogHeader>

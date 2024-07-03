@@ -47,7 +47,7 @@ type Props = {
   projectId: Id<"projects">;
   labelId: Id<"labels">;
   priority: string;
-  parentId?: Id<"todos">;
+  parentId?: Id<"todos"> | null;
 };
 
 const AddTaskForm: React.FC<Props> = ({
@@ -88,6 +88,7 @@ const AddTaskForm: React.FC<Props> = ({
       dueDate: dayjs(dueDate).valueOf(),
       projectId: projectId as Id<"projects">,
       labelId: labelId as Id<"labels">,
+      parentId: parentId as Id<"todos"> | null,
     });
     if (mutationId !== undefined) {
       toast({

@@ -26,7 +26,7 @@ const AddTaskInline: React.FC<Props> = ({
     (process.env.NEXT_PUBLIC_GET_STARTED_LABEL_ID as Id<"labels">);
 
   const priority = parentTask?.priority?.toString() || "1";
-  const parentId = parentTask?._id;
+  const parentId = parentTask?._id || null;
 
   return (
     <div>

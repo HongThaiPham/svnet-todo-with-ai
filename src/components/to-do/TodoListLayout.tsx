@@ -11,9 +11,10 @@ import AddTaskWrapper from "../task/AddTaskWrapper";
 type Props = {};
 
 const TodoListLayout: React.FC<Props> = ({}) => {
-  const todos = useQuery(api.todos.get, { parentId: undefined }) ?? [];
-  const completed = useQuery(api.todos.getCompleted) ?? [];
-  const incomplete = useQuery(api.todos.getIncomplete) ?? [];
+  const todos = useQuery(api.todos.get, { parentId: null }) ?? [];
+  const completed = useQuery(api.todos.getCompleted, { parentId: null }) ?? [];
+  const incomplete =
+    useQuery(api.todos.getIncomplete, { parentId: null }) ?? [];
   const totalTodos = useQuery(api.todos.totalTodos) ?? 0;
 
   if (

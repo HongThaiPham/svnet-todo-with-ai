@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { api } from "./_generated/api";
 export const get = query({
   args: {
-    parentId: v.optional(v.id("todos")),
+    parentId: v.union(v.id("todos"), v.null()),
   },
   handler: async (ctx, args) => {
     const userId = await handleUserId(ctx);
@@ -29,7 +29,9 @@ export const get = query({
 });
 
 export const getCompleted = query({
-  args: {},
+  args: {
+    parentId: v.union(v.id("todos"), v.null()),
+  },
   handler: async (ctx, args) => {
     const userId = await handleUserId(ctx);
     if (!userId) {
@@ -40,6 +42,7 @@ export const getCompleted = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("userId"), userId),
+          q.eq(q.field("parentId"), args.parentId),
           q.eq(q.field("isCompleted"), true)
         )
       )
@@ -48,7 +51,9 @@ export const getCompleted = query({
 });
 
 export const getIncomplete = query({
-  args: {},
+  args: {
+    parentId: v.union(v.id("todos"), v.null()),
+  },
   handler: async (ctx, args) => {
     const userId = await handleUserId(ctx);
     if (!userId) {
@@ -59,6 +64,7 @@ export const getIncomplete = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("userId"), userId),
+          q.eq(q.field("parentId"), args.parentId),
           q.eq(q.field("isCompleted"), false)
         )
       )
@@ -119,7 +125,7 @@ export const createATodo = mutation({
     projectId: v.id("projects"),
     labelId: v.id("labels"),
     embedding: v.optional(v.array(v.float64())),
-    parentId: v.optional(v.id("todos")),
+    parentId: v.union(v.id("todos"), v.null()),
   },
   handler: async (
     ctx,
@@ -173,10 +179,11 @@ export const createTodoAndEmbeddings = action({
     dueDate: v.number(),
     projectId: v.id("projects"),
     labelId: v.id("labels"),
+    parentId: v.union(v.id("todos"), v.null()),
   },
   handler: async (
     ctx,
-    { taskName, description, priority, dueDate, projectId, labelId }
+    { taskName, description, priority, dueDate, projectId, labelId, parentId }
   ) => {
     const embedding = [1, 2, 3]; //await getEmbeddingsWithAI(taskName);
     await ctx.runMutation(api.todos.createATodo, {
@@ -187,6 +194,7 @@ export const createTodoAndEmbeddings = action({
       projectId,
       labelId,
       embedding,
+      parentId: parentId ?? null,
     });
   },
 });

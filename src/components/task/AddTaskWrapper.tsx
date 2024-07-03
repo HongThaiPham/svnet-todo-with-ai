@@ -8,10 +8,13 @@ type Props = {
   parentTask?: Doc<"todos">;
 };
 
-const AddTaskWrapper: React.FC<Props> = ({}) => {
+const AddTaskWrapper: React.FC<Props> = ({ parentTask }) => {
   const [showAddTask, setShowAddTask] = React.useState(false);
   return showAddTask ? (
-    <AddTaskInline onCancel={() => setShowAddTask(false)} />
+    <AddTaskInline
+      onCancel={() => setShowAddTask(false)}
+      parentTask={parentTask}
+    />
   ) : (
     <AddTaskButton onClick={() => setShowAddTask(!showAddTask)} />
   );
