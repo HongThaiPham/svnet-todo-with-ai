@@ -3,7 +3,7 @@ import { useQuery } from "convex/react";
 import React from "react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
-import { Hash } from "lucide-react";
+import { Tag } from "lucide-react";
 import { Label } from "../ui/label";
 
 type Props = {};
@@ -20,7 +20,7 @@ const LabelList: React.FC<Props> = ({}) => {
         {labels?.map((label) => (
           <Link key={label._id} href={`/my-board/projects/${label._id}`}>
             <div className="flex items-center space-x-2 border-b-2 p-2 border-gray-100">
-              <Hash className="text-primary w-5" />
+              <Tag className="text-primary w-5" />
               <Label
                 htmlFor="projects"
                 className="text-base font-normal hover:cursor-pointer"
