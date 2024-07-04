@@ -8,8 +8,8 @@ import { Id } from "./_generated/dataModel";
 const apiKey = process.env.OPEN_AI_KEY;
 const openai = new OpenAI({
   apiKey,
-  organization: "org-R2eM8r7sYz02Don61nXq7tHX",
-  project: "proj_QiFKG38umIGuWlmxzMeW38TC",
+  // organization: "org-R2eM8r7sYz02Don61nXq7tHX",
+  // project: "proj_QiFKG38umIGuWlmxzMeW38TC",
 });
 const AI_LABEL_ID = "jx705z39bndhgxv04e5j1fgxcs6w84yr";
 
@@ -153,7 +153,7 @@ export const getEmbeddingsWithAI = async (searchText: string) => {
 
   const req = {
     input: searchText,
-    model: "text-embedding-ada-002",
+    model: "text-embedding-3-small",
     encoding_format: "float",
   };
 
