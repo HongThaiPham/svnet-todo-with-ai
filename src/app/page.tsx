@@ -1,7 +1,6 @@
 import { signInAction } from "@/actions/auth-actions";
 import GetStartedButton from "@/components/GetStartedButton";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
