@@ -67,19 +67,19 @@ export default function Home() {
               <form action={signInAction}>
                 <GetStartedButton />
               </form>
-              <div className="w-fit items-center">
+              {/* <div className="w-fit items-center">
                 <Button
                   className="text-xl text-center px-4 py-7 bg-transparent border-purple-500/50"
                   variant={"outline"}
                 >
                   Star on Github ⭐️
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
       </div>
-      {/* <div className="">
+      <div className="">
         <div className="flex items-center justify-center">
           <Image
             alt="mobile"
@@ -99,8 +99,8 @@ export default function Home() {
             className="h-full -ml-28 mt-10 hidden lg:flex"
           />
         </div>
-      </div> */}
-      <div className="flex items-center justify-center w-full fixed bottom-0">
+      </div>
+      <div className="flex items-center justify-center">
         <footer className="bottom-0 container mx-auto my-5 flex flex-col items-center justify-between space-y-3 border-t space-x-4 px-3 pt-4 text-center sm:flex-row sm:pt-2 md:text-lg">
           <div>
             Powered by{" "}
