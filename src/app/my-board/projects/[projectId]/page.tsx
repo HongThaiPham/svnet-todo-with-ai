@@ -7,6 +7,7 @@ import TodoList from "@/components/to-do/TodoList";
 import AddTaskWrapper from "@/components/task/AddTaskWrapper";
 import CompletedTodos from "@/components/to-do/CompletedTodos";
 import DeleteProject from "@/components/project/DeleteProject";
+import SuggestMissingTasks from "@/components/task/SuggestMissingTasks";
 
 type Props = {
   params: {
@@ -40,7 +41,7 @@ const ProjectPage: React.FC<Props> = ({ params: { projectId } }) => {
           {projectName || "Project"}
         </h1>
         <div className="flex gap-6 lg:gap-12 items-center">
-          {/* <SuggestMissingTasks projectId={projectId} />*/}
+          {/* <SuggestMissingTasks projectId={projectId} /> */}
           <DeleteProject projectId={projectId} />
         </div>
       </div>

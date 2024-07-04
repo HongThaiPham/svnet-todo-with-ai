@@ -3,7 +3,7 @@ import { ConvexError, v } from "convex/values";
 import { handleUserId } from "./auth";
 import { api } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
-// import dayjs from "dayjs";
+import dayjs from "dayjs";
 export const get = query({
   args: {
     parentId: v.union(v.id("todos"), v.null()),
@@ -209,8 +209,8 @@ export const getTodayTodos = query({
       throw new ConvexError("Unauthorized access");
     }
 
-    // const todayStart = dayjs().startOf("day");
-    // const todayEnd = dayjs().endOf("day");
+    const todayStart = dayjs().startOf("day");
+    const todayEnd = dayjs().endOf("day");
 
     return await ctx.db
       .query("todos")
@@ -218,9 +218,9 @@ export const getTodayTodos = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("userId"), userId),
-          q.eq(q.field("parentId"), null)
-          // q.gte(q.field("dueDate"), todayStart.valueOf()),
-          // q.lte(todayEnd.valueOf(), q.field("dueDate"))
+          q.eq(q.field("parentId"), null),
+          q.gte(q.field("dueDate"), todayStart.valueOf()),
+          q.lte(todayEnd.valueOf(), q.field("dueDate"))
         )
       )
       .collect();

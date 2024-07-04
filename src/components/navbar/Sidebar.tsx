@@ -18,13 +18,13 @@ import { cn } from "@/lib/utils";
 import { Doc } from "../../../convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import AddProjectDialog from "../project/AddProjectDialog";
 type Props = {};
 interface MyListTitleType {
   [key: string]: string;
 }
 
 const Sidebar: React.FC<Props> = ({}) => {
-  const [navItems, setNavItems] = useState([...primaryNavItems]);
   const projectList = useQuery(api.projects.get);
   const LIST_OF_TITLE_IDS: MyListTitleType = {
     primary: "",
@@ -71,9 +71,9 @@ const Sidebar: React.FC<Props> = ({}) => {
                     <p className="flex flex-1 text-base">
                       {LIST_OF_TITLE_IDS[id]}
                     </p>
-                    {/* {LIST_OF_TITLE_IDS[id] === "My Projects" && (
+                    {LIST_OF_TITLE_IDS[id] === "My Projects" && (
                       <AddProjectDialog />
-                    )} */}
+                    )}
                   </div>
                 )}
                 <div className={cn("flex items-center lg:w-full")}>
