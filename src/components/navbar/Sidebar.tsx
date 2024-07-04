@@ -19,6 +19,7 @@ import { Doc } from "../../../convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import AddProjectDialog from "../project/AddProjectDialog";
+import AddLabelDialog from "../task/AddLabelDialog";
 type Props = {};
 interface MyListTitleType {
   [key: string]: string;
@@ -101,17 +102,7 @@ const Sidebar: React.FC<Props> = ({}) => {
                         </div>
                       </div>
                     </Link>
-                    {id === "filters" && (
-                      <Dialog>
-                        <DialogTrigger id="closeDialog">
-                          <PlusIcon
-                            className="h-5 w-5"
-                            aria-label="Add a Label"
-                          />
-                        </DialogTrigger>
-                        {/* <AddLabelDialog /> */}
-                      </Dialog>
-                    )}
+                    {id === "filters" && <AddLabelDialog />}
                   </div>
                 </div>
               </div>
